@@ -1,7 +1,9 @@
 #include <stdlib.h>
-int	check_separator(char c, char *charset)
+#include <stdio.h> // Add missing import for printf
+
+int check_separator(char c, char *charset)
 {
-	int	i;
+	int i;
 
 	i = 0;
 	while (charset[i] != '\0')
@@ -13,10 +15,10 @@ int	check_separator(char c, char *charset)
 	return (0);
 }
 
-int	count_strings(char *str, char *charset)
+int count_strings(char *str, char *charset)
 {
-	int	i;
-	int	count;
+	int i;
+	int count;
 
 	count = 0;
 	i = 0;
@@ -32,9 +34,9 @@ int	count_strings(char *str, char *charset)
 	return (count);
 }
 
-int	ft_strlen_sep(char *str, char *charset)
+int ft_strlen_sep(char *str, char *charset)
 {
-	int	i;
+	int i;
 
 	i = 0;
 	while (str[i] && !check_separator(str[i], charset))
@@ -42,15 +44,20 @@ int	ft_strlen_sep(char *str, char *charset)
 	return (i);
 }
 
-char	*ft_word(char *str, char *charset)
+char *ft_word(char *str, char *charset)
 {
-	int		len_word;
-	int		i;
-	char	*word;
+	int len_word;
+	int i;
+	char *word;
 
 	i = 0;
 	len_word = ft_strlen_sep(str, charset);
 	word = (char *)malloc(sizeof(char) * (len_word + 1));
+	if (word == NULL) // Check if memory allocation failed
+	{
+		printf("Error: Failed to allocate memory for word.\n");
+		exit(1); // Exit the program with an error code
+	}
 	while (i < len_word)
 	{
 		word[i] = str[i];
@@ -60,14 +67,18 @@ char	*ft_word(char *str, char *charset)
 	return (word);
 }
 
-char	**ft_split(char *str, char *charset)
+char **ft_split(char *str, char *charset)
 {
-	char	**strings;
-	int		i;
+	char **strings;
+	int i;
 
 	i = 0;
-	strings = (char **)malloc(sizeof(char *)
-			* (count_strings(str, charset) + 1));
+	strings = (char **)malloc(sizeof(char *) * (count_strings(str, charset) + 1));
+	if (strings == NULL) // Check if memory allocation failed
+	{
+		printf("Error: Failed to allocate memory for strings.\n");
+		exit(1); // Exit the program with an error code
+	}
 	while (*str != '\0')
 	{
 		while (*str != '\0' && check_separator(*str, charset))
@@ -84,12 +95,16 @@ char	**ft_split(char *str, char *charset)
 	return (strings);
 }
 
-/*#include <stdio.h>
-int	main(int argc, char **argv)
+int main(int argc, char **argv)
 {
-	int		index;
-	char	**split;
-	(void)	argc;
+	int index;
+	char **split;
+	(void)argc;
+	if (argc < 3) // Check if there are enough command line arguments
+	{
+		printf("Error: Not enough command line arguments.\n");
+		return 1; // Exit the program with an error code
+	}
 	split = ft_split(argv[1], argv[2]);
 	index = 0;
 	while (split[index])
@@ -97,4 +112,5 @@ int	main(int argc, char **argv)
 		printf("%s\n", split[index]);
 		index++;
 	}
-}*/
+	return 0;
+}
